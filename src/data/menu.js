@@ -1,0 +1,41 @@
+export const hibiscusRefresher = {
+  id: 'hibiscus-refresher',
+  name: 'Hibiscus Refresher',
+  tagline: 'A bold hibiscus base, crafted with real fruit — refreshing in every sip.',
+  emoji: '🌺',
+  flavours: [
+    {
+      id: 'hibiscus-ginger',
+      flavour: 'Ginger',
+      description: 'A warming kick of fresh ginger blended with our hibiscus base. Bright, bold, and invigorating.',
+      emoji: '🫚',
+      color: '#d4764a',
+      lightColor: '#fdf0e8',
+    },
+    {
+      id: 'hibiscus-pineapple',
+      flavour: 'Pineapple',
+      description: 'Sweet tropical pineapple meets tart hibiscus for a sunshine-in-a-cup experience.',
+      emoji: '🍍',
+      color: '#c8a020',
+      lightColor: '#fdf8e0',
+    },
+    {
+      id: 'hibiscus-strawberry',
+      flavour: 'Strawberry',
+      description: 'Ripe strawberries and hibiscus — fruity, floral, and perfectly balanced.',
+      emoji: '🍓',
+      color: '#c0394a',
+      lightColor: '#fde8eb',
+    },
+    {
+      id: 'hibiscus-cucumber',
+      flavour: 'Cucumber',
+      description: 'Cool, crisp cucumber softens the tartness of hibiscus for a light, refreshing finish.',
+      emoji: '🥒',
+      color: '#4a8c5c',
+      lightColor: '#e8f5ec',
+    },
+  ],
+  price: 5.50,
+}
