@@ -28,7 +28,7 @@ export default function OrderConfirmationPage({ order, orderStatus, onNavigate }
         <div className="confirmation-icon">✓</div>
         <h1>Order Placed!</h1>
         <p className="confirmation-subtitle">
-          Thanks for ordering with Santi Café. We&apos;ll have it ready for you shortly!
+          Thanks{order?.customer?.name ? `, ${order.customer.name}` : ''}! We&apos;ll have your order ready shortly.
         </p>
 
         <div className="order-number">

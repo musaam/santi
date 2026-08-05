@@ -13,11 +13,15 @@ function AppContent() {
   const [orderStatus, setOrderStatus] = useState('idle') // 'idle' | 'saving' | 'saved' | 'error'
   const { items, totalPrice, clearCart } = useCart()
 
-  async function handleCheckout() {
+  async function handleCheckout(customer) {
     const tax = totalPrice * 0.08
     const grandTotal = totalPrice + tax
 
     const order = {
+      customer: {
+        name: customer.name.trim(),
+        phone: customer.phone.trim(),
+      },
       items: items.map((item) => ({
         id: item.id,
         name: item.name,
