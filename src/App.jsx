@@ -38,6 +38,7 @@ function AppContent() {
     setCompletedOrder(order)
     clearCart()
     setPage('confirmation')
+    window.scrollTo({ top: 0, behavior: 'instant' })
     setOrderStatus('saving')
 
     try {
@@ -55,6 +56,7 @@ function AppContent() {
 
   function handleNavigate(destination) {
     setPage(destination)
+    window.scrollTo({ top: 0, behavior: 'instant' })
     if (destination === 'menu') {
       setOrderStatus('idle')
       setCompletedOrder(null)
