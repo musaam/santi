@@ -6,6 +6,7 @@ import Navbar from './components/Navbar'
 import MenuPage from './pages/MenuPage'
 import CartPage from './pages/CartPage'
 import OrderConfirmationPage from './pages/OrderConfirmationPage'
+import ReviewPage from './pages/ReviewPage'
 
 function AppContent() {
   const [page, setPage] = useState('menu')
@@ -70,6 +71,7 @@ function AppContent() {
       )}
       <main className="main-content">
         {page === 'menu' && <MenuPage onNavigate={handleNavigate} />}
+        {page === 'review' && <ReviewPage />}
         {page === 'cart' && (
           <CartPage onNavigate={handleNavigate} onCheckout={handleCheckout} />
         )}

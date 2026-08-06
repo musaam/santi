@@ -20,6 +20,12 @@ export default function Navbar({ currentPage, onNavigate }) {
             Menu
           </button>
           <button
+            className={`nav-link ${currentPage === 'review' ? 'active' : ''}`}
+            onClick={() => onNavigate('review')}
+          >
+            Reviews
+          </button>
+          <button
             className={`nav-link ${currentPage === 'cart' ? 'active' : ''}`}
             onClick={() => onNavigate('cart')}
           >
