@@ -1,6 +1,6 @@
 import './OrderConfirmationPage.css'
 
-export default function OrderConfirmationPage({ order, orderStatus, onNavigate }) {
+export default function OrderConfirmationPage({ order, orderStatus, onOrderAgain }) {
   const orderNumber = order?.firestoreId
     ? order.firestoreId.slice(-6).toUpperCase()
     : String(Math.floor(Math.random() * 900) + 100)
@@ -10,7 +10,6 @@ export default function OrderConfirmationPage({ order, orderStatus, onNavigate }
       <div className="confirmation-card">
         <img src="/santi-logo.png" alt="Santi Café" className="confirm-logo" />
 
-        {/* Saving state */}
         {orderStatus === 'saving' && (
           <div className="order-status saving">
             <span className="status-spinner" />
@@ -18,7 +17,6 @@ export default function OrderConfirmationPage({ order, orderStatus, onNavigate }
           </div>
         )}
 
-        {/* Error state */}
         {orderStatus === 'error' && (
           <div className="order-status error">
             ⚠️ Your order was placed but we couldn't save it. Please show this screen to staff.
@@ -56,7 +54,7 @@ export default function OrderConfirmationPage({ order, orderStatus, onNavigate }
           ☕ Your order will be ready at the counter in about 5–10 minutes.
         </p>
 
-        <button className="btn-primary" onClick={() => onNavigate('menu')}>
+        <button className="btn-primary" onClick={onOrderAgain}>
           Order Again
         </button>
       </div>

@@ -1,9 +1,11 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
 import CartItem from '../components/CartItem'
 import './CartPage.css'
 
-export default function CartPage({ onNavigate, onCheckout }) {
+export default function CartPage({ onCheckout }) {
+  const navigate = useNavigate()
   const { items, totalPrice, totalItems } = useCart()
   const [customer, setCustomer] = useState({ name: '', phone: '' })
   const [errors, setErrors] = useState({})
@@ -51,7 +53,7 @@ export default function CartPage({ onNavigate, onCheckout }) {
           <div className="cart-empty-icon">☕</div>
           <h2>Your order is empty</h2>
           <p>Head back to the menu and add some items!</p>
-          <button className="btn-primary" onClick={() => onNavigate('menu')}>
+          <button className="btn-primary" onClick={() => navigate('/')}>
             Browse Menu
           </button>
         </div>
@@ -73,7 +75,7 @@ export default function CartPage({ onNavigate, onCheckout }) {
             {items.map((item) => (
               <CartItem key={item.id} item={item} />
             ))}
-            <button className="add-more-btn" onClick={() => onNavigate('menu')}>
+            <button className="add-more-btn" onClick={() => navigate('/')}>
               + Add more items
             </button>
           </div>
@@ -130,7 +132,7 @@ export default function CartPage({ onNavigate, onCheckout }) {
               <button className="btn-primary checkout-btn" onClick={handlePlaceOrder}>
                 Place Order
               </button>
-              <button className="btn-secondary" onClick={() => onNavigate('menu')}>
+              <button className="btn-secondary" onClick={() => navigate('/')}>
                 ← Continue Shopping
               </button>
             </div>

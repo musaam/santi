@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom'
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
 import { db } from './firebase'
 import { CartProvider, useCart } from './context/CartContext'
@@ -9,10 +10,13 @@ import OrderConfirmationPage from './pages/OrderConfirmationPage'
 import ReviewPage from './pages/ReviewPage'
 
 function AppContent() {
-  const [page, setPage] = useState('menu')
   const [completedOrder, setCompletedOrder] = useState(null)
-  const [orderStatus, setOrderStatus] = useState('idle') // 'idle' | 'saving' | 'saved' | 'error'
+  const [orderStatus, setOrderStatus] = useState('idle')
   const { items, totalPrice, clearCart } = useCart()
+  const navigate = useNavigate()
+  const location = useLocation()
+
+  const hideNavbar = location.pathname === '/confirmation'
 
   async function handleCheckout(customer) {
     const tax = totalPrice * 0.08
@@ -38,7 +42,7 @@ function AppContent() {
 
     setCompletedOrder(order)
     clearCart()
-    setPage('confirmation')
+    navigate('/confirmation')
     window.scrollTo({ top: 0, behavior: 'instant' })
     setOrderStatus('saving')
 
@@ -55,33 +59,30 @@ function AppContent() {
     }
   }
 
-  function handleNavigate(destination) {
-    setPage(destination)
-    window.scrollTo({ top: 0, behavior: 'instant' })
-    if (destination === 'menu') {
-      setOrderStatus('idle')
-      setCompletedOrder(null)
-    }
-  }
-
   return (
     <div className="app">
-      {page !== 'confirmation' && (
-        <Navbar currentPage={page} onNavigate={handleNavigate} />
-      )}
+      {!hideNavbar && <Navbar />}
       <main className="main-content">
-        {page === 'menu' && <MenuPage onNavigate={handleNavigate} />}
-        {page === 'review' && <ReviewPage />}
-        {page === 'cart' && (
-          <CartPage onNavigate={handleNavigate} onCheckout={handleCheckout} />
-        )}
-        {page === 'confirmation' && (
-          <OrderConfirmationPage
-            order={completedOrder}
-            orderStatus={orderStatus}
-            onNavigate={handleNavigate}
+        <Routes>
+          <Route path="/" element={<MenuPage />} />
+          <Route path="/order" element={<CartPage onCheckout={handleCheckout} />} />
+          <Route path="/reviews" element={<ReviewPage />} />
+          <Route
+            path="/confirmation"
+            element={
+              <OrderConfirmationPage
+                order={completedOrder}
+                orderStatus={orderStatus}
+                onOrderAgain={() => {
+                  setOrderStatus('idle')
+                  setCompletedOrder(null)
+                  navigate('/')
+                  window.scrollTo({ top: 0, behavior: 'instant' })
+                }}
+              />
+            }
           />
-        )}
+        </Routes>
       </main>
     </div>
   )
@@ -89,8 +90,10 @@ function AppContent() {
 
 export default function App() {
   return (
-    <CartProvider>
-      <AppContent />
-    </CartProvider>
+    <BrowserRouter>
+      <CartProvider>
+        <AppContent />
+      </CartProvider>
+    </BrowserRouter>
   )
 }

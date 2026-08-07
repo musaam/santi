@@ -1,9 +1,11 @@
+import { useNavigate } from 'react-router-dom'
 import { hibiscusRefresher } from '../data/menu'
 import FlavorCard from '../components/FlavorCard'
 import { useCart } from '../context/CartContext'
 import './MenuPage.css'
 
-export default function MenuPage({ onNavigate }) {
+export default function MenuPage() {
+  const navigate = useNavigate()
   const { totalItems } = useCart()
 
   return (
@@ -40,7 +42,7 @@ export default function MenuPage({ onNavigate }) {
       {/* Sticky view order button when cart has items */}
       {totalItems > 0 && (
         <div className="sticky-cart-bar">
-          <button className="view-order-btn" onClick={() => onNavigate('cart')}>
+          <button className="view-order-btn" onClick={() => navigate('/order')}>
             View Order · {totalItems} {totalItems === 1 ? 'item' : 'items'}
           </button>
         </div>

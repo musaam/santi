@@ -1,39 +1,33 @@
+import { Link, useLocation } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
 import './Navbar.css'
 
-export default function Navbar({ currentPage, onNavigate }) {
+export default function Navbar() {
   const { totalItems } = useCart()
+  const location = useLocation()
+  const path = location.pathname
 
   return (
     <nav className="navbar">
       <div className="navbar-inner">
-        <button className="navbar-brand" onClick={() => onNavigate('menu')}>
+        <Link to="/" className="navbar-brand">
           <img src="/santi-logo.png" alt="Santi Café logo" className="navbar-logo" />
           <span className="navbar-title">Santi Café</span>
-        </button>
+        </Link>
 
         <div className="navbar-links">
-          <button
-            className={`nav-link ${currentPage === 'menu' ? 'active' : ''}`}
-            onClick={() => onNavigate('menu')}
-          >
+          <Link to="/" className={`nav-link ${path === '/' ? 'active' : ''}`}>
             Menu
-          </button>
-          <button
-            className={`nav-link ${currentPage === 'review' ? 'active' : ''}`}
-            onClick={() => onNavigate('review')}
-          >
+          </Link>
+          <Link to="/reviews" className={`nav-link ${path === '/reviews' ? 'active' : ''}`}>
             Reviews
-          </button>
-          <button
-            className={`nav-link ${currentPage === 'cart' ? 'active' : ''}`}
-            onClick={() => onNavigate('cart')}
-          >
+          </Link>
+          <Link to="/order" className={`nav-link ${path === '/order' ? 'active' : ''}`}>
             Order
             {totalItems > 0 && (
               <span className="cart-badge">{totalItems}</span>
             )}
-          </button>
+          </Link>
         </div>
       </div>
     </nav>
