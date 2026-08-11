@@ -1,18 +1,18 @@
 /* ── Santi Café Theme Variables ── */
 :root {
-  --cafe-brown: #7b4a1e;       /* primary — logo text & cup */
-  --cafe-espresso: #4a2a0a;    /* darkest — hover states */
-  --cafe-latte: #c9a882;       /* accent — steam curl in logo */
-  --cafe-cream: #f2ebe0;       /* background — logo backdrop */
-  --cafe-warm-white: #faf5ee;  /* card surface */
-  --cafe-gold: #b8832a;        /* highlight */
-  --cafe-green: #4a7c59;       /* success states */
-  --text-primary: #4a2a0a;
-  --text-secondary: #7b5535;
-  --text-light: #b8956a;
-  --border: #e2d0bc;
-  --shadow: 0 2px 12px rgba(123, 74, 30, 0.08);
-  --shadow-hover: 0 4px 20px rgba(123, 74, 30, 0.16);
+  --cafe-brown: #7E1440;       /* primary — deep rose */
+  --cafe-espresso: #201A1D;    /* darkest — near-black */
+  --cafe-latte: #89D3B0;       /* accent — mint */
+  --cafe-cream: #FDF6F1;       /* background — warm off-white */
+  --cafe-warm-white: #FFFFFF;  /* card surface — pure white */
+  --cafe-gold: #B21E5B;        /* highlight — bright rose */
+  --cafe-green: #2F9E64;       /* success states — forest green */
+  --text-primary: #201A1D;
+  --text-secondary: #6B5D63;
+  --text-light: #9A8D92;
+  --border: #EADFD9;
+  --shadow: 0 2px 12px rgba(32, 26, 29, 0.08);
+  --shadow-hover: 0 4px 20px rgba(32, 26, 29, 0.16);
   --radius: 12px;
   --radius-sm: 8px;
 }
