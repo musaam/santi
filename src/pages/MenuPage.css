@@ -212,31 +212,23 @@
     flex-direction: column;
     min-height: auto;
     padding: 2.5rem 1rem 4.5rem;
-    gap: 0.5rem;
+    gap: 1rem;
+    align-items: center;
   }
 
-  /* Stack drinks side by side above the text on mobile */
-  .menu-hero {
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  .hero-drink {
-    width: clamp(80px, 28vw, 120px);
+  /* Hide the right drink, keep only the left one centered */
+  .hero-drink-right {
+    display: none;
   }
 
   .hero-drink-left {
-    transform: rotate(-8deg) translateY(8px);
+    width: clamp(100px, 35vw, 140px);
+    transform: rotate(-5deg) translateY(6px);
     order: 1;
   }
 
-  .hero-drink-right {
-    transform: rotate(8deg) translateY(8px);
-    order: 2;
-  }
-
   .menu-hero-content {
-    order: 3;
+    order: 2;
     max-width: 100%;
   }
 
