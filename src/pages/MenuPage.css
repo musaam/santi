@@ -4,40 +4,121 @@
 
 /* ── Hero ── */
 .menu-hero {
-  background: var(--cafe-cream);
-  border-bottom: 2px solid var(--border);
-  padding: 2rem 1.25rem 1.75rem;
-  text-align: center;
+  position: relative;
+  background: linear-gradient(135deg, #201A1D 0%, #3d1628 50%, #201A1D 100%);
+  min-height: 420px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 3rem 1.25rem 5rem;
+  gap: 2rem;
 }
 
+/* Subtle radial glow behind the text */
+.menu-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 60% 70% at 50% 40%, rgba(178, 30, 91, 0.18) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* ── Drink illustrations ── */
+.hero-drink {
+  flex: 0 0 auto;
+  width: clamp(110px, 18vw, 200px);
+  position: relative;
+  z-index: 1;
+  /* soft drop shadow to lift off the dark background */
+  filter: drop-shadow(0 16px 40px rgba(0, 0, 0, 0.5));
+}
+
+.hero-drink-left {
+  transform: rotate(-8deg) translateY(16px);
+}
+
+.hero-drink-right {
+  transform: rotate(8deg) translateY(16px);
+}
+
+.hibiscus-drink-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ── Center text ── */
 .menu-hero-content {
+  flex: 1 1 auto;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.6rem;
+  text-align: center;
+  z-index: 1;
+  max-width: 380px;
 }
 
-.hero-logo {
-  width: 80px;
-  height: 80px;
-  object-fit: contain;
+.hero-eyebrow {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #89D3B0;
 }
 
 .menu-hero-content h1 {
   font-family: 'Playfair Display', serif;
-  font-size: clamp(1.6rem, 5vw, 2.8rem);
+  font-size: clamp(2rem, 6vw, 3.2rem);
   font-weight: 700;
-  color: var(--cafe-brown);
-  margin-bottom: 0.1rem;
-  letter-spacing: 0.02em;
+  color: #FFFFFF;
+  line-height: 1.1;
+  letter-spacing: 0.01em;
 }
 
-.menu-hero-content p {
-  color: var(--text-secondary);
-  font-size: 0.8rem;
+.hero-sub {
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 0.95rem;
   font-weight: 400;
+  line-height: 1.6;
+  max-width: 280px;
+}
+
+.hero-cta {
+  display: inline-block;
+  margin-top: 0.5rem;
+  background: #B21E5B;
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 700;
   letter-spacing: 0.04em;
-  text-transform: uppercase;
+  padding: 0.6rem 1.6rem;
+  border-radius: 40px;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.15s;
+  box-shadow: 0 4px 20px rgba(178, 30, 91, 0.4);
+}
+
+.hero-cta:hover {
+  background: #7E1440;
+  transform: translateY(-2px);
+}
+
+/* ── Wave divider ── */
+.hero-wave {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  line-height: 0;
+  z-index: 2;
+}
+
+.hero-wave svg {
+  display: block;
+  width: 100%;
+  height: 80px;
 }
 
 /* ── Product section ── */
@@ -115,7 +196,7 @@
   border-radius: 40px;
   font-size: 1rem;
   font-weight: 700;
-  box-shadow: 0 4px 20px rgba(74, 42, 10, 0.35);
+  box-shadow: 0 4px 20px rgba(32, 26, 29, 0.35);
   transition: background 0.2s, transform 0.15s;
   white-space: nowrap;
 }
@@ -125,7 +206,40 @@
   transform: scale(1.03);
 }
 
+/* ── Responsive ── */
 @media (max-width: 640px) {
+  .menu-hero {
+    flex-direction: column;
+    min-height: auto;
+    padding: 2.5rem 1rem 4.5rem;
+    gap: 0.5rem;
+  }
+
+  /* Stack drinks side by side above the text on mobile */
+  .menu-hero {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .hero-drink {
+    width: clamp(80px, 28vw, 120px);
+  }
+
+  .hero-drink-left {
+    transform: rotate(-8deg) translateY(8px);
+    order: 1;
+  }
+
+  .hero-drink-right {
+    transform: rotate(8deg) translateY(8px);
+    order: 2;
+  }
+
+  .menu-hero-content {
+    order: 3;
+    max-width: 100%;
+  }
+
   .flavors-grid {
     grid-template-columns: 1fr;
   }
@@ -136,6 +250,12 @@
 
   .product-intro {
     margin-bottom: 1.25rem;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 860px) {
+  .hero-drink {
+    width: clamp(90px, 14vw, 140px);
   }
 }
 
