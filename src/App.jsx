@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom'
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
+import { getFunctions, httpsCallable } from 'firebase/functions'
 import { db } from './firebase'
 import { CartProvider, useCart } from './context/CartContext'
 import Navbar from './components/Navbar'
@@ -53,6 +54,11 @@ function AppContent() {
       })
       setOrderStatus('saved')
       setCompletedOrder((prev) => ({ ...prev, firestoreId: docRef.id }))
+
+      // Send order notification email via Cloud Function
+      const functions = getFunctions()
+      const sendOrderEmail = httpsCallable(functions, 'sendOrderEmail')
+      await sendOrderEmail({ order })
     } catch (err) {
       console.error('Failed to save order:', err)
       setOrderStatus('error')
