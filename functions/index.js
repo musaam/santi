@@ -85,9 +85,12 @@ exports.sendOrderEmail = onCall(
     }
 
     try {
-      await sgMail.send(msg)
+      functions.logger.info('Sending order email:', { order, msg });
+      await sgMail.send(msg);
+      functions.logger.info('Order email sent successfully');
       return { success: true }
     } catch (err) {
+      functions.logger.error('SendGrid error:', { error: err?.response?.body || err });
       console.error('SendGrid error:', err?.response?.body || err)
       throw new HttpsError('internal', 'Failed to send email')
     }
