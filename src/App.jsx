@@ -55,10 +55,14 @@ function AppContent() {
       setOrderStatus('saved')
       setCompletedOrder((prev) => ({ ...prev, firestoreId: docRef.id }))
 
-      // Send order notification email via Cloud Function
-      const functions = getFunctions()
-      const sendOrderEmail = httpsCallable(functions, 'sendOrderEmail')
-      await sendOrderEmail({ order })
+      // Send order notification email — failure here doesn't affect the order
+      try {
+        const functions = getFunctions()
+        const sendOrderEmail = httpsCallable(functions, 'sendOrderEmail')
+        await sendOrderEmail({ order })
+      } catch (emailErr) {
+        console.error('Email notification failed (order still saved):', emailErr)
+      }
     } catch (err) {
       console.error('Failed to save order:', err)
       setOrderStatus('error')

@@ -1,5 +1,6 @@
 const { onCall, HttpsError } = require('firebase-functions/v2/https')
 const { defineSecret } = require('firebase-functions/params')
+const logger = require('firebase-functions/logger')
 const sgMail = require('@sendgrid/mail')
 
 const sendgridApiKey = defineSecret('SENDGRID_API_KEY')
@@ -85,13 +86,12 @@ exports.sendOrderEmail = onCall(
     }
 
     try {
-      functions.logger.info('Sending order email:', { order, msg });
-      await sgMail.send(msg);
-      functions.logger.info('Order email sent successfully');
+      logger.info('Sending order email to', TO_EMAIL)
+      await sgMail.send(msg)
+      logger.info('Order email sent successfully')
       return { success: true }
     } catch (err) {
-      functions.logger.error('SendGrid error:', { error: err?.response?.body || err });
-      console.error('SendGrid error:', err?.response?.body || err)
+      logger.error('SendGrid error', { body: err?.response?.body || err.message })
       throw new HttpsError('internal', 'Failed to send email')
     }
   }
