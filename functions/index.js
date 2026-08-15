@@ -38,6 +38,7 @@ exports.sendOrderEmail = onCall(
         </div>
 
         <div style="background: #faf5ee; padding: 24px 32px; border: 1px solid #e2d0bc; border-top: none;">
+          ${order.orderNumber ? `<p style="margin: 0 0 16px; font-size: 18px; font-weight: bold; color: #7b4a1e;">Order #${order.orderNumber}</p>` : ''}
           <h2 style="margin: 0 0 4px; font-size: 16px; color: #7b4a1e;">Customer</h2>
           <p style="margin: 0 0 20px; color: #7b5535;">
             <strong>${order.customer.name}</strong><br/>
@@ -81,7 +82,7 @@ exports.sendOrderEmail = onCall(
     const msg = {
       to: TO_EMAIL,
       from: FROM_EMAIL,
-      subject: `New Order from ${order.customer.name} — $${order.grandTotal.toFixed(2)}`,
+      subject: `Order #${order.orderNumber || '—'} from ${order.customer.name} — $${order.grandTotal.toFixed(2)}`,
       html,
     }
 

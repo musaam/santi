@@ -1,9 +1,8 @@
 import './OrderConfirmationPage.css'
 
 export default function OrderConfirmationPage({ order, orderStatus, onOrderAgain }) {
-  const orderNumber = order?.firestoreId
-    ? order.firestoreId.slice(-6).toUpperCase()
-    : String(Math.floor(Math.random() * 900) + 100)
+  const orderNumber = order?.orderNumber
+    || (order?.firestoreId ? order.firestoreId.slice(-6).toUpperCase() : '…')
 
   return (
     <div className="confirmation-page">

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom'
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
+import { collection, addDoc, doc, runTransaction, serverTimestamp } from 'firebase/firestore'
 import { getFunctions, httpsCallable } from 'firebase/functions'
 import { db } from './firebase'
 import { CartProvider, useCart } from './context/CartContext'
@@ -48,18 +48,28 @@ function AppContent() {
     setOrderStatus('saving')
 
     try {
+      // Atomically increment order counter and get the new order number
+      const counterRef = doc(db, 'counters', 'orders')
+      const orderNumber = await runTransaction(db, async (transaction) => {
+        const counterDoc = await transaction.get(counterRef)
+        const nextNumber = (counterDoc.exists() ? counterDoc.data().current : 0) + 1
+        transaction.set(counterRef, { current: nextNumber })
+        return nextNumber
+      })
+
       const docRef = await addDoc(collection(db, 'orders'), {
         ...order,
+        orderNumber,
         createdAt: serverTimestamp(),
       })
       setOrderStatus('saved')
-      setCompletedOrder((prev) => ({ ...prev, firestoreId: docRef.id }))
+      setCompletedOrder((prev) => ({ ...prev, firestoreId: docRef.id, orderNumber }))
 
       // Send order notification email — failure here doesn't affect the order
       try {
         const functions = getFunctions()
         const sendOrderEmail = httpsCallable(functions, 'sendOrderEmail')
-        await sendOrderEmail({ order })
+        await sendOrderEmail({ order: { ...order, orderNumber } })
       } catch (emailErr) {
         console.error('Email notification failed (order still saved):', emailErr)
       }
