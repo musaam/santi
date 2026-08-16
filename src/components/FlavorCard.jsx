@@ -21,8 +21,7 @@ export default function FlavorCard({ flavour, price }) {
       }}
     >
       <div className="flavor-card-header">
-        <span className="flavor-emoji">{flavour.emoji}</span>
-        <div className="flavor-dot" />
+        <img src={flavour.image} alt={flavour.flavour} className="flavor-image" />
       </div>
 
       <div className="flavor-card-body">
