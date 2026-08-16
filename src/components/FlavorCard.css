@@ -65,12 +65,12 @@
 .flavor-price {
   font-weight: 800;
   font-size: 1rem;
-  color: var(--cafe-brown);
+  color: #8b1a2b;
   white-space: nowrap;
 }
 
 .flavor-add-btn {
-  background: var(--flavor-color);
+  background: #8b1a2b;
   color: #fff;
   border-radius: 20px;
   padding: 0.4rem 1.1rem;

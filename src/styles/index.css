@@ -31,7 +31,7 @@ html {
 
 body {
   font-family: 'Lato', sans-serif;
-  background-color: var(--cafe-cream);
+  background-color: #eaf4fb;
   color: var(--text-primary);
   line-height: 1.6;
   min-height: 100vh;

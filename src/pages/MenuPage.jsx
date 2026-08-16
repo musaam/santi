@@ -1,3 +1,4 @@
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { hibiscusRefresher } from '../data/menu'
 import FlavorCard from '../components/FlavorCard'
@@ -6,28 +7,62 @@ import './MenuPage.css'
 
 export default function MenuPage() {
   const navigate = useNavigate()
-  const { totalItems } = useCart()
+  const { totalItems, addItem } = useCart()
+  const heroRef = useRef(null)
+  const [showStickyBar, setShowStickyBar] = useState(false)
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => setShowStickyBar(!entry.isIntersecting),
+      { threshold: 0 }
+    )
+    if (heroRef.current) observer.observe(heroRef.current)
+    return () => observer.disconnect()
+  }, [])
 
   return (
     <div className="menu-page">
-      {/* Hero */}
-      <section className="menu-hero">
-        <div className="hero-text">
-          <h1 className="hero-headline">
-            <span className="hero-script">Refresh your</span>
-            <span className="hero-bold">EVERYDAY.</span>
-          </h1>
-          <p className="hero-sub">
-            Naturally vibrant. Deliciously refreshing.<br />
-            Made with real hibiscus.
-          </p>
-          <a href="#menu" className="hero-cta">
-            GET YOURS <span aria-hidden="true">→</span>
-          </a>
+      {/* Hero — image only, no text overlay */}
+      <section className="menu-hero" ref={heroRef}>
+        <img
+          src="/hero-bg-mobile.png"
+          alt="Santi Café Hibiscus Drink"
+          className="hero-image-mobile"
+        />
+        <img
+          src="/hero-bg.png"
+          alt="Santi Café Hibiscus Drink"
+          className="hero-image-desktop"
+        />
+      </section>
+
+      {/* Product info — directly below hero */}
+      <section className="product-hero">
+        <h1 className="product-hero-name">Santi Café Hibiscus Drink</h1>
+        <p className="product-hero-desc">
+          Naturally refreshing. Made with real hibiscus.
+        </p>
+        <p className="product-hero-price">${hibiscusRefresher.price.toFixed(2)}</p>
+        <a href="#flavours" className="product-hero-cta">
+          SHOP HIBISCUS DRINKS
+        </a>
+      </section>
+
+      {/* Product cards — immediately after */}
+      <section className="product-section" id="flavours">
+        <h2 className="section-heading">Shop Hibiscus Drinks</h2>
+        <div className="flavors-grid">
+          {hibiscusRefresher.flavours.map((flavour) => (
+            <FlavorCard
+              key={flavour.id}
+              flavour={flavour}
+              price={hibiscusRefresher.price}
+            />
+          ))}
         </div>
       </section>
 
-      {/* Feature strip */}
+      {/* Feature strip — lower on page, not cluttering first screen */}
       <section className="feature-strip">
         <div className="feature-item">
           <div className="feature-icon">
@@ -59,32 +94,28 @@ export default function MenuPage() {
         </div>
       </section>
 
-      {/* Product feature section */}
-      <div className="product-section" id="menu">
-        <div className="product-intro">
-          <div className="product-badge">🌺 Featured Drink</div>
-          <h2 className="product-title">{hibiscusRefresher.name}</h2>
-          <p className="product-tagline">{hibiscusRefresher.tagline}</p>
-        </div>
-
-        <div className="flavor-label">Choose your flavour</div>
-        <div className="flavors-grid">
-          {hibiscusRefresher.flavours.map((flavour) => (
-            <FlavorCard
-              key={flavour.id}
-              flavour={flavour}
-              price={hibiscusRefresher.price}
-            />
-          ))}
-        </div>
-      </div>
-
-      {/* Sticky view order button when cart has items */}
-      {totalItems > 0 && (
+      {/* Sticky mobile cart bar — shows after scrolling past hero */}
+      {showStickyBar && (
         <div className="sticky-cart-bar">
-          <button className="view-order-btn" onClick={() => navigate('/order')}>
-            View Order · {totalItems} {totalItems === 1 ? 'item' : 'items'}
-          </button>
+          <div className="sticky-cart-info">
+            <span className="sticky-cart-name">Hibiscus Drink</span>
+            <span className="sticky-cart-price">${hibiscusRefresher.price.toFixed(2)}</span>
+          </div>
+          {totalItems > 0 ? (
+            <button className="sticky-cart-btn" onClick={() => navigate('/order')}>
+              View Cart ({totalItems})
+            </button>
+          ) : (
+            <button
+              className="sticky-cart-btn"
+              onClick={() => {
+                const el = document.getElementById('flavours')
+                if (el) el.scrollIntoView({ behavior: 'smooth' })
+              }}
+            >
+              ADD TO CART
+            </button>
+          )}
         </div>
       )}
     </div>

@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
 import './Navbar.css'
@@ -6,11 +7,23 @@ export default function Navbar() {
   const { totalItems } = useCart()
   const location = useLocation()
   const path = location.pathname
+  const [menuOpen, setMenuOpen] = useState(false)
 
   return (
     <nav className="navbar">
       <div className="navbar-inner">
-        <Link to="/" className="navbar-brand">
+        <button
+          className="hamburger"
+          onClick={() => setMenuOpen(!menuOpen)}
+          aria-label="Toggle menu"
+          aria-expanded={menuOpen}
+        >
+          <span className={`hamburger-line ${menuOpen ? 'open' : ''}`} />
+          <span className={`hamburger-line ${menuOpen ? 'open' : ''}`} />
+          <span className={`hamburger-line ${menuOpen ? 'open' : ''}`} />
+        </button>
+
+        <Link to="/" className="navbar-brand" onClick={() => setMenuOpen(false)}>
           <img src="/santi-logo.png" alt="Santi Café logo" className="navbar-logo" />
           <span className="navbar-title">Santi Café</span>
         </Link>
@@ -33,6 +46,26 @@ export default function Navbar() {
             )}
           </Link>
         </div>
+      </div>
+
+      {/* Mobile slide-in menu */}
+      {menuOpen && <div className="mobile-overlay" onClick={() => setMenuOpen(false)} />}
+      <div className={`mobile-menu ${menuOpen ? 'open' : ''}`}>
+        <button className="mobile-menu-close" onClick={() => setMenuOpen(false)} aria-label="Close menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M18 6L6 18" />
+            <path d="M6 6l12 12" />
+          </svg>
+        </button>
+        <Link to="/" className={`mobile-menu-link ${path === '/' ? 'active' : ''}`} onClick={() => setMenuOpen(false)}>
+          Menu
+        </Link>
+        <Link to="/reviews" className={`mobile-menu-link ${path === '/reviews' ? 'active' : ''}`} onClick={() => setMenuOpen(false)}>
+          Reviews
+        </Link>
+        <Link to="/order" className={`mobile-menu-link ${path === '/order' ? 'active' : ''}`} onClick={() => setMenuOpen(false)}>
+          Cart {totalItems > 0 && `(${totalItems})`}
+        </Link>
       </div>
     </nav>
   )
