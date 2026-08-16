@@ -215,7 +215,7 @@
 @media (max-width: 768px) {
   .menu-hero {
     aspect-ratio: auto;
-    min-height: 280px;
+    min-height: 350px;
     background-size: cover;
     background-position: center;
     padding: 4rem 1.5rem 2rem;
@@ -228,44 +228,91 @@
 
   .feature-strip {
     grid-template-columns: repeat(2, 1fr);
-    gap: 1.5rem 1rem;
-    padding: 2rem 1.5rem;
+    gap: 1.25rem 1rem;
+    padding: 1.5rem 1.5rem;
+  }
+
+  .feature-icon {
+    width: 36px;
+    height: 36px;
+  }
+
+  .feature-icon svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .feature-item h3 {
+    font-size: 0.65rem;
+  }
+
+  .feature-item p {
+    font-size: 0.72rem;
   }
 }
 
 @media (max-width: 480px) {
   .menu-hero {
-    min-height: 220px;
-    padding: 3.5rem 1rem 1.5rem;
+    background-image: url('/hero-bg-mobile.png');
+    background-position: top center;
+    background-size: cover;
+    aspect-ratio: 898 / 1200;
+    min-height: auto;
+    padding: 5rem 1.25rem 2rem;
+    align-items: flex-start;
+    justify-content: center;
   }
 
   .hero-text {
-    margin-left: 0.5rem;
-    max-width: 65%;
+    margin-left: 0;
+    max-width: 100%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: none;
+    backdrop-filter: none;
+    border-radius: 0;
+    padding: 0;
   }
 
-  .hero-script {
-    font-size: 1.2rem;
-  }
-
-  .hero-bold {
-    font-size: 2rem;
+  .hero-headline {
+    display: none;
   }
 
   .hero-sub {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     margin-bottom: 1rem;
+    color: #3a3a4a;
   }
 
   .hero-cta {
-    padding: 0.6rem 1.2rem;
-    font-size: 0.75rem;
+    padding: 0.75rem 1.6rem;
+    font-size: 0.82rem;
   }
 
   .feature-strip {
     grid-template-columns: 1fr 1fr;
-    gap: 1.25rem 0.75rem;
-    padding: 1.5rem 1rem;
+    gap: 1rem 0.5rem;
+    padding: 1.25rem 0.75rem;
+  }
+
+  .feature-icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .feature-icon svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .feature-item h3 {
+    font-size: 0.6rem;
+  }
+
+  .feature-item p {
+    font-size: 0.68rem;
   }
 
   .product-section {
@@ -276,3 +323,4 @@
     margin-bottom: 1.25rem;
   }
 }
+
