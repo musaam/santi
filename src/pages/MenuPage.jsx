@@ -1,7 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { hibiscusRefresher } from '../data/menu'
 import FlavorCard from '../components/FlavorCard'
-import HibiscusDrink from '../components/HibiscusDrink'
 import { useCart } from '../context/CartContext'
 import './MenuPage.css'
 
@@ -13,29 +12,50 @@ export default function MenuPage() {
     <div className="menu-page">
       {/* Hero */}
       <section className="menu-hero">
-        {/* Left drink illustration */}
-        <div className="hero-drink hero-drink-left">
-          <HibiscusDrink variant="left" />
+        <div className="hero-text">
+          <h1 className="hero-headline">
+            <span className="hero-script">Refresh your</span>
+            <span className="hero-bold">EVERYDAY.</span>
+          </h1>
+          <p className="hero-sub">
+            Naturally vibrant. Deliciously refreshing.<br />
+            Made with real hibiscus.
+          </p>
+          <a href="#menu" className="hero-cta">
+            GET YOURS <span aria-hidden="true">→</span>
+          </a>
         </div>
+      </section>
 
-        {/* Center text */}
-        <div className="menu-hero-content">
-          <p className="hero-eyebrow">🌺 Freshly made daily</p>
-          <h1>Santi Café</h1>
-          <p className="hero-sub">Bold hibiscus drinks crafted with real fruit</p>
-          <a href="#menu" className="hero-cta">See the Menu ↓</a>
+      {/* Feature strip */}
+      <section className="feature-strip">
+        <div className="feature-item">
+          <div className="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M12 2C8 2 5 5 5 8c0 4 7 12 7 12s7-8 7-12c0-3-3-6-7-6z"/><circle cx="12" cy="8" r="2"/></svg>
+          </div>
+          <h3>REAL HIBISCUS</h3>
+          <p>Made with real hibiscus flowers.</p>
         </div>
-
-        {/* Right drink illustration */}
-        <div className="hero-drink hero-drink-right">
-          <HibiscusDrink variant="right" />
+        <div className="feature-item">
+          <div className="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M12 22c5.5 0 10-4.5 10-10S17.5 2 12 2 2 6.5 2 12s4.5 10 10 10z"/><path d="M8 12l3 3 5-5"/></svg>
+          </div>
+          <h3>NATURAL INGREDIENTS</h3>
+          <p>No artificial colors. No preservatives.</p>
         </div>
-
-        {/* Wave divider */}
-        <div className="hero-wave">
-          <svg viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M0,40 C360,80 1080,0 1440,40 L1440,80 L0,80 Z" fill="#FDF6F1" />
-          </svg>
+        <div className="feature-item">
+          <div className="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          </div>
+          <h3>REFRESHING GOODNESS</h3>
+          <p>Light, refreshing and perfectly satisfying.</p>
+        </div>
+        <div className="feature-item">
+          <div className="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </div>
+          <h3>MADE WITH CARE</h3>
+          <p>Handcrafted drinks you can feel good about.</p>
         </div>
       </section>
 
