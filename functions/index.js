@@ -34,7 +34,7 @@ exports.sendOrderEmail = onCall(
     const html = `
       <div style="font-family: sans-serif; max-width: 520px; margin: 0 auto; color: #4a2a0a;">
         <div style="background: #4a2a0a; padding: 24px 32px; border-radius: 12px 12px 0 0;">
-          <h1 style="color: #f2ebe0; margin: 0; font-size: 22px;">☕ New Order — Santi Café</h1>
+          <h1 style="color: #f2ebe0; margin: 0; font-size: 22px;">☕ New Order — Santi</h1>
         </div>
 
         <div style="background: #faf5ee; padding: 24px 32px; border: 1px solid #e2d0bc; border-top: none;">
@@ -74,7 +74,7 @@ exports.sendOrderEmail = onCall(
         </div>
 
         <div style="background: #f2ebe0; padding: 16px 32px; border-radius: 0 0 12px 12px; border: 1px solid #e2d0bc; border-top: none; font-size: 12px; color: #b8956a; text-align: center;">
-          Santi Café · Order notification
+          Santi · Order notification
         </div>
       </div>
     `

@@ -7,7 +7,7 @@ export default function OrderConfirmationPage({ order, orderStatus, onOrderAgain
   return (
     <div className="confirmation-page">
       <div className="confirmation-card">
-        <img src="/santi-logo.png" alt="Santi Café" className="confirm-logo" />
+        <img src="/santi-logo.png" alt="Santi" className="confirm-logo" />
 
         {orderStatus === 'saving' && (
           <div className="order-status saving">

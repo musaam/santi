@@ -106,7 +106,7 @@ export default function ReviewPage() {
       {/* Form card */}
       {status === 'success' ? (
         <div className="review-card">
-          <img src="/santi-logo.png" alt="Santi Café" className="review-logo" />
+          <img src="/santi-logo.png" alt="Santi" className="review-logo" />
           <div className="review-success-icon">★</div>
           <h1>Thank you!</h1>
           <p className="review-success-text">
@@ -118,9 +118,9 @@ export default function ReviewPage() {
         </div>
       ) : (
         <div className="review-card">
-          <img src="/santi-logo.png" alt="Santi Café" className="review-logo" />
+          <img src="/santi-logo.png" alt="Santi" className="review-logo" />
           <h1>Leave a Review</h1>
-          <p className="review-subtitle">How was your experience at Santi Café?</p>
+          <p className="review-subtitle">How was your experience at Santi?</p>
 
           <form onSubmit={handleSubmit} noValidate>
             <div className="form-section">

@@ -22,30 +22,29 @@ export default function MenuPage() {
 
   return (
     <div className="menu-page">
-      {/* Hero — image only, no text overlay */}
+      {/* Hero with product info overlaid on desktop */}
       <section className="menu-hero" ref={heroRef}>
         <img
-          src="/hero-bg-mobile.png"
-          alt="Santi Café Hibiscus Drink"
+          src="/hero-bg-mobile-2.png"
+          alt="Santi Hibiscus Drink"
           className="hero-image-mobile"
         />
         <img
-          src="/hero-bg.png"
-          alt="Santi Café Hibiscus Drink"
+          src="/hero-bg-2.png"
+          alt="Santi Hibiscus Drink"
           className="hero-image-desktop"
         />
-      </section>
-
-      {/* Product info — directly below hero */}
-      <section className="product-hero">
-        <h1 className="product-hero-name">Santi Café Hibiscus Drink</h1>
-        <p className="product-hero-desc">
-          Naturally refreshing. Made with real hibiscus.
-        </p>
-        <p className="product-hero-price">${hibiscusRefresher.price.toFixed(2)}</p>
-        <a href="#flavours" className="product-hero-cta">
-          SHOP HIBISCUS DRINKS
-        </a>
+        {/* Product info — overlaid on left on desktop, below image on mobile */}
+        <div className="product-hero">
+          <h1 className="product-hero-name">Santi Hibiscus Drink</h1>
+          <p className="product-hero-desc">
+            Naturally refreshing. Made with real hibiscus.
+          </p>
+          <p className="product-hero-price">${hibiscusRefresher.price.toFixed(2)}</p>
+          <a href="#flavours" className="product-hero-cta">
+            SHOP HIBISCUS DRINKS
+          </a>
+        </div>
       </section>
 
       {/* Product cards — immediately after */}

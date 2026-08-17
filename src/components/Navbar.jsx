@@ -24,8 +24,8 @@ export default function Navbar() {
         </button>
 
         <Link to="/" className="navbar-brand" onClick={() => setMenuOpen(false)}>
-          <img src="/santi-logo.png" alt="Santi Café logo" className="navbar-logo" />
-          <span className="navbar-title">Santi Café</span>
+          <img src="/santi-logo.png" alt="santi logo" className="navbar-logo" />
+          <span className="navbar-title">Santi</span>
         </Link>
 
         <div className="navbar-links">
