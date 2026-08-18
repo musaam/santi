@@ -3,9 +3,13 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "dev": "vite --mode development",
+    "dev:prod": "vite --mode production",
+    "build": "vite build --mode development",
+    "build:prod": "vite build --mode production",
+    "preview": "vite preview",
+    "deploy:dev": "firebase use local && vite build --mode development && firebase deploy",
+    "deploy:prod": "firebase use production && vite build --mode production && firebase deploy"
   },
   "dependencies": {
     "firebase": "11.10.0",
