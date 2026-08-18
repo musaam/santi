@@ -159,3 +159,17 @@
 .btn-primary {
   width: 100%;
 }
+
+.confirmation-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+.confirmation-actions .btn-primary,
+.confirmation-actions .btn-secondary {
+  width: 100%;
+  text-align: center;
+}

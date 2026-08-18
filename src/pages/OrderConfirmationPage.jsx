@@ -50,12 +50,17 @@ export default function OrderConfirmationPage({ order, orderStatus, onOrderAgain
         )}
 
         <p className="pickup-note">
-          ☕ Your order will be ready at the counter in about 5–10 minutes.
+          ✉️ An order confirmation email has been sent to the email you provided. Please refer to it for details about pickup or delivery.
         </p>
 
-        <button className="btn-primary" onClick={onOrderAgain}>
-          Order Again
-        </button>
+        <div className="confirmation-actions">
+          <button className="btn-primary" onClick={onOrderAgain}>
+            Order Again
+          </button>
+          <button className="btn-secondary" onClick={onOrderAgain}>
+            ← Go Home
+          </button>
+        </div>
       </div>
     </div>
   )

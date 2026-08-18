@@ -7,11 +7,13 @@ import './CartPage.css'
 export default function CartPage({ onCheckout }) {
   const navigate = useNavigate()
   const { items, totalPrice, totalItems } = useCart()
-  const [customer, setCustomer] = useState({ name: '', phone: '' })
+  const [customer, setCustomer] = useState({ name: '', email: '', phone: '' })
+  const [deliveryMethod, setDeliveryMethod] = useState('pickup')
   const [errors, setErrors] = useState({})
 
-  const tax = totalPrice * 0.08
-  const grandTotal = totalPrice + tax
+  const deliveryFee = deliveryMethod === 'delivery' ? 5.00 : 0
+  const tax = totalPrice * 0.12
+  const grandTotal = totalPrice + tax + deliveryFee
 
   function formatPhone(value) {
     const digits = value.replace(/\D/g, '').slice(0, 10)
@@ -31,10 +33,13 @@ export default function CartPage({ onCheckout }) {
     if (!customer.name.trim()) {
       newErrors.name = 'Please enter your name'
     }
-    if (!customer.phone.trim()) {
-      newErrors.phone = 'Please enter your phone number'
-    } else if (!/^(\+?1[\s\-.]?)?\(?\d{3}\)?[\s\-.]?\d{3}[\s\-.]?\d{4}$/.test(customer.phone.trim())) {
-      newErrors.phone = 'Please enter a valid Canadian phone number (e.g. 416-555-1234)'
+    if (!customer.email.trim()) {
+      newErrors.email = 'Please enter your email'
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customer.email.trim())) {
+      newErrors.email = 'Please enter a valid email address'
+    }
+    if (customer.phone.trim() && !/^(\+?1[\s\-.]?)?\(?\d{3}\)?[\s\-.]?\d{3}[\s\-.]?\d{4}$/.test(customer.phone.trim())) {
+      newErrors.phone = 'Please enter a valid phone number (e.g. 416-555-1234)'
     }
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
@@ -42,7 +47,7 @@ export default function CartPage({ onCheckout }) {
 
   function handlePlaceOrder() {
     if (validate()) {
-      onCheckout(customer)
+      onCheckout(customer, { deliveryMethod, deliveryFee })
     }
   }
 
@@ -100,8 +105,23 @@ export default function CartPage({ onCheckout }) {
                 />
                 {errors.name && <span className="field-error">{errors.name}</span>}
               </div>
+              <div className={`form-field ${errors.email ? 'has-error' : ''}`}>
+                <label htmlFor="customer-email">Email</label>
+                <input
+                  id="customer-email"
+                  type="email"
+                  placeholder="e.g. alex@example.com"
+                  value={customer.email}
+                  onChange={(e) => {
+                    setCustomer((p) => ({ ...p, email: e.target.value }))
+                    if (errors.email) setErrors((p) => ({ ...p, email: '' }))
+                  }}
+                  autoComplete="email"
+                />
+                {errors.email && <span className="field-error">{errors.email}</span>}
+              </div>
               <div className={`form-field ${errors.phone ? 'has-error' : ''}`}>
-                <label htmlFor="customer-phone">Phone Number</label>
+                <label htmlFor="customer-phone">Phone Number <span className="field-optional">(optional)</span></label>
                 <input
                   id="customer-phone"
                   type="tel"
@@ -114,6 +134,30 @@ export default function CartPage({ onCheckout }) {
               </div>
             </div>
 
+            {/* Delivery method */}
+            <div className="delivery-method">
+              <h2>Order Type</h2>
+              <div className="delivery-toggle">
+                <button
+                  className={`toggle-btn ${deliveryMethod === 'pickup' ? 'active' : ''}`}
+                  onClick={() => setDeliveryMethod('pickup')}
+                  type="button"
+                >
+                  🏪 Pickup
+                </button>
+                <button
+                  className={`toggle-btn ${deliveryMethod === 'delivery' ? 'active' : ''}`}
+                  onClick={() => setDeliveryMethod('delivery')}
+                  type="button"
+                >
+                  🚗 Delivery
+                </button>
+              </div>
+              {deliveryMethod === 'delivery' && (
+                <p className="delivery-note">A $5.00 delivery fee will be added to your order.</p>
+              )}
+            </div>
+
             {/* Order summary */}
             <div className="order-summary">
               <h2>Order Summary</h2>
@@ -122,9 +166,15 @@ export default function CartPage({ onCheckout }) {
                 <span>${totalPrice.toFixed(2)}</span>
               </div>
               <div className="summary-line">
-                <span>Tax (8%)</span>
+                <span>Tax (12%)</span>
                 <span>${tax.toFixed(2)}</span>
               </div>
+              {deliveryFee > 0 && (
+                <div className="summary-line">
+                  <span>Delivery Fee</span>
+                  <span>${deliveryFee.toFixed(2)}</span>
+                </div>
+              )}
               <div className="summary-line total">
                 <span>Total</span>
                 <span>${grandTotal.toFixed(2)}</span>
