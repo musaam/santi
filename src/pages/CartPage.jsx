@@ -143,14 +143,14 @@ export default function CartPage({ onCheckout }) {
                   onClick={() => setDeliveryMethod('pickup')}
                   type="button"
                 >
-                  🏪 Pickup
+                  Pickup
                 </button>
                 <button
                   className={`toggle-btn ${deliveryMethod === 'delivery' ? 'active' : ''}`}
                   onClick={() => setDeliveryMethod('delivery')}
                   type="button"
                 >
-                  🚗 Delivery
+                  Delivery
                 </button>
               </div>
               {deliveryMethod === 'delivery' && (
