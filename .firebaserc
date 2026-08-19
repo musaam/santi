@@ -2,6 +2,6 @@
   "projects": {
     "default": "quiz-app-e79c1",
     "local": "quiz-app-e79c1",
-    "production": "YOUR_PRODUCTION_PROJECT_ID"
+    "production": "santi-2fc1a"
   }
 }
