@@ -1,0 +1,182 @@
+/* ═══════════════════════════════════════════
+   SERVER PAGE — order queue
+   Relies on the shared admin shell styles in AdminPage.css
+   (login, buttons, .admin-dashboard, .admin-header, .admin-user).
+   ═══════════════════════════════════════════ */
+
+/* ── Tabs ── */
+.admin-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--cafe-cream);
+  padding-top: 0.75rem;
+}
+
+.admin-tab {
+  background: transparent;
+  padding: 0.65rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-light);
+  border-bottom: 3px solid transparent;
+  margin-bottom: -1px;
+}
+
+.admin-tab.active {
+  color: var(--cafe-brown);
+  border-bottom-color: var(--cafe-gold);
+}
+
+.admin-empty {
+  text-align: center;
+  color: var(--text-light);
+  padding: 3rem 1rem;
+}
+
+.admin-orders-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+/* ── Order card ── */
+.order-card {
+  background: var(--cafe-warm-white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Summary row (always visible, toggles details) */
+.admin-order-summary {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  flex-wrap: nowrap;
+}
+
+.admin-order-summary:hover {
+  background: var(--cafe-cream);
+}
+
+.order-chevron {
+  color: var(--text-light);
+  font-size: 0.85rem;
+  transition: transform 0.15s;
+  flex-shrink: 0;
+}
+
+.order-chevron.open {
+  transform: rotate(90deg);
+}
+
+.admin-order-number {
+  font-weight: 800;
+  color: var(--cafe-brown);
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.admin-order-summary-name {
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  font-weight: 600;
+  flex: 1;
+  min-width: 0;
+}
+
+.admin-order-summary-meta {
+  font-size: 0.8rem;
+  color: var(--text-light);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Collapsible details */
+.order-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0 1rem 0.75rem;
+}
+
+.order-customer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.75rem;
+  font-size: 0.88rem;
+  color: var(--text-primary);
+}
+
+.order-email {
+  color: var(--text-secondary);
+}
+
+.order-when,
+.order-placed {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+
+.order-when-label {
+  font-weight: 700;
+  color: var(--cafe-brown);
+}
+
+.order-items {
+  list-style: none;
+  padding: 0.5rem 0;
+  margin: 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.order-items li {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.88rem;
+  color: var(--cafe-brown);
+}
+
+.order-item-qty {
+  color: var(--text-light);
+  font-weight: 700;
+}
+
+.order-card-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.order-total {
+  font-weight: 800;
+  font-size: 1.05rem;
+  color: var(--cafe-brown);
+  flex-shrink: 0;
+}
+
+.order-done-badge {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--cafe-green);
+}
