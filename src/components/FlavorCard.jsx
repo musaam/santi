@@ -8,7 +8,6 @@ export default function FlavorCard({ flavour, price }) {
   const item = {
     id: flavour.id,
     name: `Hibiscus Refresher — ${flavour.flavour}`,
-    emoji: flavour.emoji,
     price,
   }
 

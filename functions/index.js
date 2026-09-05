@@ -24,12 +24,27 @@ exports.sendOrderEmail = onCall(
       .map(
         (item) =>
           `<tr>
-            <td style="padding: 8px 0; border-bottom: 1px solid #e2d0bc;">${item.emoji} ${item.name}</td>
+            <td style="padding: 8px 0; border-bottom: 1px solid #e2d0bc;">${item.name}</td>
             <td style="padding: 8px 0; border-bottom: 1px solid #e2d0bc; text-align: center;">×${item.quantity}</td>
             <td style="padding: 8px 0; border-bottom: 1px solid #e2d0bc; text-align: right;">$${item.subtotal.toFixed(2)}</td>
           </tr>`
       )
       .join('')
+
+    // Format order date nicely (e.g. "Saturday, Aug 23, 2026")
+    function formatOrderDate(dateStr) {
+      if (!dateStr) return ''
+      const d = new Date(`${dateStr}T00:00:00`)
+      if (isNaN(d.getTime())) return dateStr
+      return d.toLocaleDateString('en-US', {
+        weekday: 'long', year: 'numeric', month: 'short', day: 'numeric',
+      })
+    }
+
+    const scheduledDate = formatOrderDate(order.orderDate)
+    const isDelivery = order.deliveryMethod === 'delivery'
+    const locationLabel = isDelivery ? 'Delivery Address' : 'Pickup Location'
+    const locationValue = isDelivery ? (order.address || '') : (order.pickupAddress || '')
 
     const html = `
       <div style="font-family: sans-serif; max-width: 520px; margin: 0 auto; color: #4a2a0a;">
@@ -44,6 +59,9 @@ exports.sendOrderEmail = onCall(
             <strong>${order.customer.name}</strong><br/>
             ${order.customer.email || ''}${order.customer.phone ? `<br/>${order.customer.phone}` : ''}
             <br/><strong>Order type:</strong> ${order.deliveryMethod === 'delivery' ? '🚗 Delivery' : '🏪 Pickup'}
+            ${scheduledDate ? `<br/><strong>${isDelivery ? 'Delivery' : 'Pickup'} date:</strong> ${scheduledDate}` : ''}
+            ${order.orderTime ? `<br/><strong>${isDelivery ? 'Delivery' : 'Pickup'} time:</strong> ${order.orderTime}` : ''}
+            ${locationValue ? `<br/><strong>${locationLabel}:</strong> ${locationValue}` : ''}
           </p>
 
           <h2 style="margin: 0 0 12px; font-size: 16px; color: #7b4a1e;">Order</h2>
@@ -62,10 +80,6 @@ exports.sendOrderEmail = onCall(
             <tr>
               <td style="padding: 4px 0; color: #7b5535;">Subtotal</td>
               <td style="padding: 4px 0; text-align: right; color: #7b5535;">$${order.subtotal.toFixed(2)}</td>
-            </tr>
-            <tr>
-              <td style="padding: 4px 0; color: #7b5535;">Tax (12%)</td>
-              <td style="padding: 4px 0; text-align: right; color: #7b5535;">$${order.tax.toFixed(2)}</td>
             </tr>
             ${order.deliveryFee ? `<tr>
               <td style="padding: 4px 0; color: #7b5535;">Delivery Fee</td>
@@ -121,10 +135,6 @@ exports.sendOrderEmail = onCall(
               <td style="padding: 4px 0; color: #7b5535;">Subtotal</td>
               <td style="padding: 4px 0; text-align: right; color: #7b5535;">$${order.subtotal.toFixed(2)}</td>
             </tr>
-            <tr>
-              <td style="padding: 4px 0; color: #7b5535;">Tax (12%)</td>
-              <td style="padding: 4px 0; text-align: right; color: #7b5535;">$${order.tax.toFixed(2)}</td>
-            </tr>
             ${order.deliveryFee ? `<tr>
               <td style="padding: 4px 0; color: #7b5535;">Delivery Fee</td>
               <td style="padding: 4px 0; text-align: right; color: #7b5535;">$${order.deliveryFee.toFixed(2)}</td>
@@ -138,8 +148,11 @@ exports.sendOrderEmail = onCall(
           <div style="margin-top: 24px; padding: 16px; background: #f2ebe0; border-radius: 8px;">
             <p style="margin: 0; font-size: 14px; color: #4a2a0a;">
               ${order.deliveryMethod === 'delivery'
-                ? '<strong>🚗 Delivery:</strong> Your order will be delivered to you shortly.'
-                : '<strong>🏪 Pickup:</strong> Your order will be ready at the counter in about 5–10 minutes.'}
+                ? '<strong>🚗 Delivery:</strong> Your order will be delivered to you.'
+                : '<strong>🏪 Pickup:</strong> Your order will be ready at the counter.'}
+              ${scheduledDate ? `<br/><strong>${isDelivery ? 'Delivery' : 'Pickup'} date:</strong> ${scheduledDate}` : ''}
+              ${order.orderTime ? `<br/><strong>${isDelivery ? 'Delivery' : 'Pickup'} time:</strong> ${order.orderTime}` : ''}
+              ${locationValue ? `<br/><strong>${locationLabel}:</strong> ${locationValue}` : ''}
               <br/>If you have any questions, feel free to reach out to us.
             </p>
           </div>

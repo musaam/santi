@@ -4,11 +4,15 @@ import { collection, addDoc, doc, runTransaction, serverTimestamp } from 'fireba
 import { getFunctions, httpsCallable } from 'firebase/functions'
 import { db } from './firebase'
 import { CartProvider, useCart } from './context/CartContext'
+import { ConfigProvider } from './context/ConfigContext'
 import Navbar from './components/Navbar'
+import ScrollToTop from './components/ScrollToTop'
 import MenuPage from './pages/MenuPage'
 import CartPage from './pages/CartPage'
 import OrderConfirmationPage from './pages/OrderConfirmationPage'
 import ReviewPage from './pages/ReviewPage'
+import AdminPage from './pages/AdminPage'
+import ServerPage from './pages/ServerPage'
 
 function AppContent() {
   const [completedOrder, setCompletedOrder] = useState(null)
@@ -17,11 +21,10 @@ function AppContent() {
   const navigate = useNavigate()
   const location = useLocation()
 
-  const hideNavbar = location.pathname === '/confirmation'
+  const hideNavbar = location.pathname === '/confirmation' || location.pathname === '/admin' || location.pathname === '/server'
 
-  async function handleCheckout(customer, { deliveryMethod, deliveryFee }) {
-    const tax = totalPrice * 0.12
-    const grandTotal = totalPrice + tax + deliveryFee
+  async function handleCheckout(customer, { deliveryMethod, deliveryFee, orderDate, orderTime, address, pickupAddress }) {
+    const grandTotal = totalPrice + deliveryFee
 
     const order = {
       customer: {
@@ -31,16 +34,18 @@ function AppContent() {
       },
       deliveryMethod,
       deliveryFee,
+      orderDate: orderDate || '',
+      orderTime: orderTime || '',
+      address: address || '',
+      pickupAddress: pickupAddress || '',
       items: items.map((item) => ({
         id: item.id,
         name: item.name,
-        emoji: item.emoji,
         price: item.price,
         quantity: item.quantity,
         subtotal: item.price * item.quantity,
       })),
       subtotal: totalPrice,
-      tax,
       grandTotal,
     }
 
@@ -63,6 +68,7 @@ function AppContent() {
       const docRef = await addDoc(collection(db, 'orders'), {
         ...order,
         orderNumber,
+        status: 'active',
         createdAt: serverTimestamp(),
       })
       setOrderStatus('saved')
@@ -84,12 +90,15 @@ function AppContent() {
 
   return (
     <div className="app">
+      <ScrollToTop />
       {!hideNavbar && <Navbar />}
       <main className="main-content">
         <Routes>
           <Route path="/" element={<MenuPage />} />
           <Route path="/order" element={<CartPage onCheckout={handleCheckout} />} />
           <Route path="/reviews" element={<ReviewPage />} />
+          <Route path="/admin" element={<AdminPage />} />
+          <Route path="/server" element={<ServerPage />} />
           <Route
             path="/confirmation"
             element={
@@ -114,9 +123,11 @@ function AppContent() {
 export default function App() {
   return (
     <BrowserRouter>
-      <CartProvider>
-        <AppContent />
-      </CartProvider>
+      <ConfigProvider>
+        <CartProvider>
+          <AppContent />
+        </CartProvider>
+      </ConfigProvider>
     </BrowserRouter>
   )
 }

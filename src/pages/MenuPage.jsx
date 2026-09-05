@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { hibiscusRefresher } from '../data/menu'
+import { useConfig } from '../context/ConfigContext'
 import FlavorCard from '../components/FlavorCard'
 import { useCart } from '../context/CartContext'
 import './MenuPage.css'
@@ -8,6 +8,7 @@ import './MenuPage.css'
 export default function MenuPage() {
   const navigate = useNavigate()
   const { totalItems, addItem } = useCart()
+  const { product, availableFlavours } = useConfig()
   const heroRef = useRef(null)
   const [showStickyBar, setShowStickyBar] = useState(false)
 
@@ -40,7 +41,7 @@ export default function MenuPage() {
           <p className="product-hero-desc">
             Naturally refreshing. Made with real hibiscus.
           </p>
-          <p className="product-hero-price">${hibiscusRefresher.price.toFixed(2)}</p>
+          <p className="product-hero-price">${product.price.toFixed(2)}</p>
           <a href="#flavours" className="product-hero-cta">
             SHOP HIBISCUS DRINKS
           </a>
@@ -51,11 +52,11 @@ export default function MenuPage() {
       <section className="product-section" id="flavours">
         <h2 className="section-heading">Shop Hibiscus Drinks</h2>
         <div className="flavors-grid">
-          {hibiscusRefresher.flavours.map((flavour) => (
+          {availableFlavours.map((flavour) => (
             <FlavorCard
               key={flavour.id}
               flavour={flavour}
-              price={hibiscusRefresher.price}
+              price={product.price}
             />
           ))}
         </div>
@@ -98,7 +99,7 @@ export default function MenuPage() {
         <div className="sticky-cart-bar">
           <div className="sticky-cart-info">
             <span className="sticky-cart-name">Hibiscus Drink</span>
-            <span className="sticky-cart-price">${hibiscusRefresher.price.toFixed(2)}</span>
+            <span className="sticky-cart-price">${product.price.toFixed(2)}</span>
           </div>
           {totalItems > 0 ? (
             <button className="sticky-cart-btn" onClick={() => navigate('/order')}>

@@ -1,19 +1,96 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
 import CartItem from '../components/CartItem'
 import './CartPage.css'
 
+// Santi Cafe pickup location.
+// PICKUP_ADDRESS is the general area shown on the cart *before* an order is
+// placed. PICKUP_ADDRESS_FULL is the complete street address, revealed only
+// after checkout (on the confirmation page and in the confirmation emails).
+export const PICKUP_ADDRESS = 'Richmond west, Winnipeg, MB, Canada'
+export const PICKUP_ADDRESS_FULL = '51 Brentlawn Blvd, Winnipeg, MB, Canada'
+
+// Pickup time slots (30-min increments, end time inclusive) depend on the day:
+//  - Weekdays (Mon–Fri): 6:00 PM – 9:00 PM
+//  - Weekends (Sat/Sun): 1:00 PM – 9:00 PM
+const WEEKDAY_SLOTS = [
+  '6:00 PM', '6:30 PM',
+  '7:00 PM', '7:30 PM',
+  '8:00 PM', '8:30 PM',
+  '9:00 PM',
+]
+const WEEKEND_SLOTS = [
+  '1:00 PM', '1:30 PM',
+  '2:00 PM', '2:30 PM',
+  '3:00 PM', '3:30 PM',
+  '4:00 PM', '4:30 PM',
+  '5:00 PM', '5:30 PM',
+  '6:00 PM', '6:30 PM',
+  '7:00 PM', '7:30 PM',
+  '8:00 PM', '8:30 PM',
+  '9:00 PM',
+]
+
+// Given a date value (YYYY-MM-DD), return the pickup slots for that weekday.
+// Weekends (Sunday=0, Saturday=6) get the extended afternoon hours.
+function slotsForDate(dateStr) {
+  if (!dateStr) return []
+  const [year, month, day] = dateStr.split('-').map(Number)
+  if (!year || !month || !day) return []
+  const d = new Date(year, month - 1, day)
+  const wd = d.getDay()
+  return wd === 0 || wd === 6 ? WEEKEND_SLOTS : WEEKDAY_SLOTS
+}
+
+// Persist checkout form details for the duration of the browser session so they
+// survive navigating away (e.g. "Continue Shopping") and back to the cart.
+const CHECKOUT_STORAGE_KEY = 'santi-checkout-details'
+
+function loadCheckoutDetails() {
+  try {
+    const raw = sessionStorage.getItem(CHECKOUT_STORAGE_KEY)
+    return raw ? JSON.parse(raw) : null
+  } catch {
+    return null
+  }
+}
+
+export function clearCheckoutDetails() {
+  try {
+    sessionStorage.removeItem(CHECKOUT_STORAGE_KEY)
+  } catch {
+    /* ignore storage errors */
+  }
+}
+
 export default function CartPage({ onCheckout }) {
   const navigate = useNavigate()
   const { items, totalPrice, totalItems } = useCart()
-  const [customer, setCustomer] = useState({ name: '', email: '', phone: '' })
-  const [deliveryMethod, setDeliveryMethod] = useState('pickup')
+
+  const saved = loadCheckoutDetails() || {}
+  const [customer, setCustomer] = useState(saved.customer || { name: '', email: '', phone: '' })
+  const [orderDate, setOrderDate] = useState(saved.orderDate || '')
+  const [orderTime, setOrderTime] = useState(saved.orderTime || '')
   const [errors, setErrors] = useState({})
 
-  const deliveryFee = deliveryMethod === 'delivery' ? 5.00 : 0
-  const tax = totalPrice * 0.12
-  const grandTotal = totalPrice + tax + deliveryFee
+  // Save form details to sessionStorage whenever they change.
+  useEffect(() => {
+    try {
+      sessionStorage.setItem(
+        CHECKOUT_STORAGE_KEY,
+        JSON.stringify({ customer, orderDate, orderTime })
+      )
+    } catch {
+      /* ignore storage errors (e.g. private mode quota) */
+    }
+  }, [customer, orderDate, orderTime])
+
+  // Pickup only — no delivery fees.
+  const grandTotal = totalPrice
+
+  // Available time slots for the currently selected date.
+  const timeSlots = slotsForDate(orderDate)
 
   function formatPhone(value) {
     const digits = value.replace(/\D/g, '').slice(0, 10)
@@ -26,6 +103,46 @@ export default function CartPage({ onCheckout }) {
     const formatted = formatPhone(e.target.value)
     setCustomer((p) => ({ ...p, phone: formatted }))
     if (errors.phone) setErrors((p) => ({ ...p, phone: '' }))
+  }
+
+  function handleDateChange(e) {
+    const nextDate = e.target.value
+    setOrderDate(nextDate)
+    if (errors.orderDate) setErrors((p) => ({ ...p, orderDate: '' }))
+    // If the previously chosen time isn't offered on the new day, clear it.
+    if (orderTime && !slotsForDate(nextDate).includes(orderTime)) {
+      setOrderTime('')
+    }
+  }
+
+  // Next 14 days, any day of the week.
+  function getUpcomingDates() {
+    const dates = []
+    const today = new Date()
+    for (let i = 0; i < 14; i++) {
+      const d = new Date(today)
+      d.setDate(today.getDate() + i)
+      dates.push(d)
+    }
+    return dates
+  }
+
+  const upcomingDates = getUpcomingDates()
+
+  function formatDateOption(date) {
+    const dayName = date.toLocaleDateString('en-US', { weekday: 'long' })
+    const month = date.toLocaleDateString('en-US', { month: 'short' })
+    const dayNum = date.getDate()
+    return `${dayName}, ${month} ${dayNum}`
+  }
+
+  function formatDateValue(date) {
+    // Use local date components (not toISOString, which converts to UTC and can
+    // shift the date by a day for users in negative UTC offsets in the evening).
+    const year = date.getFullYear()
+    const month = String(date.getMonth() + 1).padStart(2, '0')
+    const day = String(date.getDate()).padStart(2, '0')
+    return `${year}-${month}-${day}`
   }
 
   function validate() {
@@ -41,13 +158,28 @@ export default function CartPage({ onCheckout }) {
     if (customer.phone.trim() && !/^(\+?1[\s\-.]?)?\(?\d{3}\)?[\s\-.]?\d{3}[\s\-.]?\d{4}$/.test(customer.phone.trim())) {
       newErrors.phone = 'Please enter a valid phone number (e.g. 416-555-1234)'
     }
+    if (!orderDate) {
+      newErrors.orderDate = 'Please select a date'
+    }
+    if (!orderTime) {
+      newErrors.orderTime = 'Please select a time'
+    }
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
 
   function handlePlaceOrder() {
     if (validate()) {
-      onCheckout(customer, { deliveryMethod, deliveryFee })
+      onCheckout(customer, {
+        deliveryMethod: 'pickup',
+        deliveryFee: 0,
+        orderDate,
+        orderTime,
+        address: '',
+        pickupAddress: PICKUP_ADDRESS_FULL,
+      })
+      // Order submitted — don't keep the details around for the next order.
+      clearCheckoutDetails()
     }
   }
 
@@ -134,28 +266,56 @@ export default function CartPage({ onCheckout }) {
               </div>
             </div>
 
-            {/* Delivery method */}
-            <div className="delivery-method">
-              <h2>Order Type</h2>
-              <div className="delivery-toggle">
-                <button
-                  className={`toggle-btn ${deliveryMethod === 'pickup' ? 'active' : ''}`}
-                  onClick={() => setDeliveryMethod('pickup')}
-                  type="button"
-                >
-                  Pickup
-                </button>
-                <button
-                  className={`toggle-btn ${deliveryMethod === 'delivery' ? 'active' : ''}`}
-                  onClick={() => setDeliveryMethod('delivery')}
-                  type="button"
-                >
-                  Delivery
-                </button>
+            {/* Pickup location */}
+            <div className="pickup-section">
+              <h2>Pickup</h2>
+              <div className="pickup-address">
+                <span className="pickup-address-label">📍 Pickup Location</span>
+                <span className="pickup-address-value">{PICKUP_ADDRESS}</span>
+                <span className="pickup-address-note">The full pickup address will be shown once your order is placed.</span>
               </div>
-              {deliveryMethod === 'delivery' && (
-                <p className="delivery-note">A $5.00 delivery fee will be added to your order.</p>
-              )}
+            </div>
+
+            {/* Date & Time selection */}
+            <div className="datetime-section">
+              <h2>Pickup Date &amp; Time</h2>
+              <p className="datetime-note">
+                Pickup hours: weekdays 6:00–9:00 PM, weekends 1:00–9:00 PM.
+              </p>
+              <div className={`form-field ${errors.orderDate ? 'has-error' : ''}`}>
+                <label htmlFor="order-date">Date</label>
+                <select
+                  id="order-date"
+                  value={orderDate}
+                  onChange={handleDateChange}
+                >
+                  <option value="">Select a date</option>
+                  {upcomingDates.map((date) => (
+                    <option key={formatDateValue(date)} value={formatDateValue(date)}>
+                      {formatDateOption(date)}
+                    </option>
+                  ))}
+                </select>
+                {errors.orderDate && <span className="field-error">{errors.orderDate}</span>}
+              </div>
+              <div className={`form-field ${errors.orderTime ? 'has-error' : ''}`}>
+                <label htmlFor="order-time">Time</label>
+                <select
+                  id="order-time"
+                  value={orderTime}
+                  onChange={(e) => {
+                    setOrderTime(e.target.value)
+                    if (errors.orderTime) setErrors((p) => ({ ...p, orderTime: '' }))
+                  }}
+                  disabled={!orderDate}
+                >
+                  <option value="">{orderDate ? 'Select a time' : 'Select a date first'}</option>
+                  {timeSlots.map((slot) => (
+                    <option key={slot} value={slot}>{slot}</option>
+                  ))}
+                </select>
+                {errors.orderTime && <span className="field-error">{errors.orderTime}</span>}
+              </div>
             </div>
 
             {/* Order summary */}
@@ -165,16 +325,6 @@ export default function CartPage({ onCheckout }) {
                 <span>Subtotal</span>
                 <span>${totalPrice.toFixed(2)}</span>
               </div>
-              <div className="summary-line">
-                <span>Tax (12%)</span>
-                <span>${tax.toFixed(2)}</span>
-              </div>
-              {deliveryFee > 0 && (
-                <div className="summary-line">
-                  <span>Delivery Fee</span>
-                  <span>${deliveryFee.toFixed(2)}</span>
-                </div>
-              )}
               <div className="summary-line total">
                 <span>Total</span>
                 <span>${grandTotal.toFixed(2)}</span>
