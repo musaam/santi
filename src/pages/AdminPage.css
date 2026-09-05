@@ -215,11 +215,6 @@
   align-items: center;
 }
 
-.menu-editor-emoji {
-  font-size: 1.25rem;
-  flex-shrink: 0;
-}
-
 .menu-editor-name {
   flex: 1;
   min-width: 0;

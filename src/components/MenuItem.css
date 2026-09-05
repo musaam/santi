@@ -13,13 +13,6 @@
   transform: translateY(-2px);
 }
 
-.menu-item-emoji {
-  font-size: 2.2rem;
-  flex-shrink: 0;
-  line-height: 1;
-  padding-top: 2px;
-}
-
 .menu-item-info {
   flex: 1;
   display: flex;

@@ -6,7 +6,7 @@ import { hibiscusRefresher as fallbackProduct } from '../data/menu'
 const ConfigContext = createContext(null)
 
 // Merge the live Firestore product over the bundled fallback so the storefront
-// always has a complete product (name, emoji, colors, images) even if the
+// always has a complete product (name, colors, images) even if the
 // admin has only edited price or a couple of flavours.
 function mergeProduct(fallback, saved) {
   if (!saved || typeof saved !== 'object') return fallback

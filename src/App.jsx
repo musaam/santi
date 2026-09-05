@@ -6,6 +6,7 @@ import { db } from './firebase'
 import { CartProvider, useCart } from './context/CartContext'
 import { ConfigProvider } from './context/ConfigContext'
 import Navbar from './components/Navbar'
+import ScrollToTop from './components/ScrollToTop'
 import MenuPage from './pages/MenuPage'
 import CartPage from './pages/CartPage'
 import OrderConfirmationPage from './pages/OrderConfirmationPage'
@@ -22,9 +23,8 @@ function AppContent() {
 
   const hideNavbar = location.pathname === '/confirmation' || location.pathname === '/admin' || location.pathname === '/server'
 
-  async function handleCheckout(customer, { deliveryMethod, deliveryFee }) {
-    const tax = totalPrice * 0.12
-    const grandTotal = totalPrice + tax + deliveryFee
+  async function handleCheckout(customer, { deliveryMethod, deliveryFee, orderDate, orderTime, address, pickupAddress }) {
+    const grandTotal = totalPrice + deliveryFee
 
     const order = {
       customer: {
@@ -34,16 +34,18 @@ function AppContent() {
       },
       deliveryMethod,
       deliveryFee,
+      orderDate: orderDate || '',
+      orderTime: orderTime || '',
+      address: address || '',
+      pickupAddress: pickupAddress || '',
       items: items.map((item) => ({
         id: item.id,
         name: item.name,
-        emoji: item.emoji,
         price: item.price,
         quantity: item.quantity,
         subtotal: item.price * item.quantity,
       })),
       subtotal: totalPrice,
-      tax,
       grandTotal,
     }
 
@@ -88,6 +90,7 @@ function AppContent() {
 
   return (
     <div className="app">
+      <ScrollToTop />
       {!hideNavbar && <Navbar />}
       <main className="main-content">
         <Routes>

@@ -7,7 +7,6 @@ export default function MenuItem({ item }) {
 
   return (
     <div className="menu-item">
-      <div className="menu-item-emoji">{item.emoji}</div>
       <div className="menu-item-info">
         <h3 className="menu-item-name">{item.name}</h3>
         <p className="menu-item-description">{item.description}</p>

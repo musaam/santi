@@ -43,7 +43,7 @@ function ProductEditor() {
     setSaving(true)
     setMsg('')
     // Persist only the fields the admin controls. Static styling (colors,
-    // images, emoji) stays in the bundled fallback and is merged in by
+    // images) stays in the bundled fallback and is merged in by
     // ConfigContext, so we don't need to store it here.
     const productData = {
       name: name.trim(),
@@ -125,7 +125,6 @@ function ProductEditor() {
         {flavours.map((f) => (
           <div key={f.id} className={`menu-editor-item ${f.available === false ? 'unavailable' : ''}`}>
             <div className="menu-editor-row">
-              <span className="menu-editor-emoji" aria-hidden="true">{f.emoji}</span>
               <input
                 className="menu-editor-name"
                 value={f.flavour}
