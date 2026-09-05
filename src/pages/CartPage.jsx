@@ -267,7 +267,7 @@ export default function CartPage({ onCheckout }) {
             </div>
 
             {/* Pickup location */}
-            <div className="delivery-method">
+            <div className="pickup-section">
               <h2>Pickup</h2>
               <div className="pickup-address">
                 <span className="pickup-address-label">📍 Pickup Location</span>
