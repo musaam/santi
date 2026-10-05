@@ -19,16 +19,23 @@ exports.sendOrderEmail = onCall(
 
     sgMail.setApiKey(sendgridApiKey.value())
 
+    // Safely format a numeric value as currency, tolerating missing/invalid data
+    const money = (value) => {
+      const n = Number(value)
+      return Number.isFinite(n) ? n.toFixed(2) : '0.00'
+    }
+
     // Build items rows for the email
     const itemRows = order.items
-      .map(
-        (item) =>
-          `<tr>
+      .map((item) => {
+        const subtotal =
+          item.subtotal != null ? item.subtotal : (item.price || 0) * (item.quantity || 0)
+        return `<tr>
             <td style="padding: 8px 0; border-bottom: 1px solid #e2d0bc;">${item.name}</td>
             <td style="padding: 8px 0; border-bottom: 1px solid #e2d0bc; text-align: center;">×${item.quantity}</td>
-            <td style="padding: 8px 0; border-bottom: 1px solid #e2d0bc; text-align: right;">$${item.subtotal.toFixed(2)}</td>
+            <td style="padding: 8px 0; border-bottom: 1px solid #e2d0bc; text-align: right;">$${money(subtotal)}</td>
           </tr>`
-      )
+      })
       .join('')
 
     // Format order date nicely (e.g. "Saturday, Aug 23, 2026")
@@ -79,15 +86,15 @@ exports.sendOrderEmail = onCall(
           <table style="width: 100%; border-collapse: collapse;">
             <tr>
               <td style="padding: 4px 0; color: #7b5535;">Subtotal</td>
-              <td style="padding: 4px 0; text-align: right; color: #7b5535;">$${order.subtotal.toFixed(2)}</td>
+              <td style="padding: 4px 0; text-align: right; color: #7b5535;">$${money(order.subtotal)}</td>
             </tr>
             ${order.deliveryFee ? `<tr>
               <td style="padding: 4px 0; color: #7b5535;">Delivery Fee</td>
-              <td style="padding: 4px 0; text-align: right; color: #7b5535;">$${order.deliveryFee.toFixed(2)}</td>
+              <td style="padding: 4px 0; text-align: right; color: #7b5535;">$${money(order.deliveryFee)}</td>
             </tr>` : ''}
             <tr style="font-weight: bold; font-size: 16px;">
               <td style="padding: 12px 0 4px; border-top: 2px solid #e2d0bc; color: #4a2a0a;">Total</td>
-              <td style="padding: 12px 0 4px; border-top: 2px solid #e2d0bc; text-align: right; color: #7b4a1e;">$${order.grandTotal.toFixed(2)}</td>
+              <td style="padding: 12px 0 4px; border-top: 2px solid #e2d0bc; text-align: right; color: #7b4a1e;">$${money(order.grandTotal)}</td>
             </tr>
           </table>
         </div>
@@ -101,7 +108,7 @@ exports.sendOrderEmail = onCall(
     const msg = {
       to: ORDERS_EMAIL,
       from: WEBAPP_EMAIL,
-      subject: `Order #${order.orderNumber || '—'} from ${order.customer.name} — $${order.grandTotal.toFixed(2)}`,
+      subject: `Order #${order.orderNumber || '—'} from ${order.customer.name} — $${money(order.grandTotal)}`,
       html,
     }
 
@@ -133,15 +140,15 @@ exports.sendOrderEmail = onCall(
           <table style="width: 100%; border-collapse: collapse;">
             <tr>
               <td style="padding: 4px 0; color: #7b5535;">Subtotal</td>
-              <td style="padding: 4px 0; text-align: right; color: #7b5535;">$${order.subtotal.toFixed(2)}</td>
+              <td style="padding: 4px 0; text-align: right; color: #7b5535;">$${money(order.subtotal)}</td>
             </tr>
             ${order.deliveryFee ? `<tr>
               <td style="padding: 4px 0; color: #7b5535;">Delivery Fee</td>
-              <td style="padding: 4px 0; text-align: right; color: #7b5535;">$${order.deliveryFee.toFixed(2)}</td>
+              <td style="padding: 4px 0; text-align: right; color: #7b5535;">$${money(order.deliveryFee)}</td>
             </tr>` : ''}
             <tr style="font-weight: bold; font-size: 16px;">
               <td style="padding: 12px 0 4px; border-top: 2px solid #e2d0bc; color: #4a2a0a;">Total</td>
-              <td style="padding: 12px 0 4px; border-top: 2px solid #e2d0bc; text-align: right; color: #7b4a1e;">$${order.grandTotal.toFixed(2)}</td>
+              <td style="padding: 12px 0 4px; border-top: 2px solid #e2d0bc; text-align: right; color: #7b4a1e;">$${money(order.grandTotal)}</td>
             </tr>
           </table>
 
